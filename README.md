@@ -40,61 +40,49 @@ There is a need for an intelligent, location-aware system that recommends crops 
 # Program
 ```
 import streamlit as st
-
-st.set_page_config(page_title="AI Crop Recommendation System", layout="centered")
-
-st.title("🌾 AI-Based Crop Recommendation System")
-st.write("City-wise crop, soil and nutrient recommendation for India")
+from PIL import Image, ImageDraw
 
 # --------------------------------------------------
-# CITY → SOIL → CLIMATE → CROP DATA
+# DATASETS (AS GIVEN BY YOU)
 # --------------------------------------------------
 
 city_data = {
-
-    # ---------- TAMIL NADU ----------
     "Chennai": {"soil": "Alluvial", "crop": "Rice", "temp": 33, "humidity": 65, "rain": 90},
     "Coimbatore": {"soil": "Red", "crop": "Cotton", "temp": 30, "humidity": 60, "rain": 70},
     "Madurai": {"soil": "Red", "crop": "Millets", "temp": 34, "humidity": 55, "rain": 60},
     "Trichy": {"soil": "Alluvial", "crop": "Sugarcane", "temp": 35, "humidity": 60, "rain": 80},
     "Ooty": {"soil": "Mountain", "crop": "Tea", "temp": 18, "humidity": 85, "rain": 200},
 
-    # ---------- KERALA ----------
     "Kochi": {"soil": "Laterite", "crop": "Rice", "temp": 29, "humidity": 85, "rain": 300},
     "Munnar": {"soil": "Mountain", "crop": "Tea", "temp": 19, "humidity": 82, "rain": 220},
     "Wayanad": {"soil": "Laterite", "crop": "Coffee", "temp": 23, "humidity": 78, "rain": 250},
     "Palakkad": {"soil": "Alluvial", "crop": "Rice", "temp": 32, "humidity": 70, "rain": 150},
 
-    # ---------- OTHER STATES (1 CITY EACH) ----------
-    "Bengaluru": {"soil": "Red", "crop": "Ragi", "temp": 26, "humidity": 60, "rain": 90},              # Karnataka
-    "Hyderabad": {"soil": "Black", "crop": "Cotton", "temp": 32, "humidity": 55, "rain": 70},          # Telangana
-    "Vijayawada": {"soil": "Alluvial", "crop": "Rice", "temp": 33, "humidity": 70, "rain": 120},        # Andhra Pradesh
-    "Mumbai": {"soil": "Laterite", "crop": "Rice", "temp": 30, "humidity": 80, "rain": 300},            # Maharashtra
-    "Indore": {"soil": "Black", "crop": "Soybean", "temp": 28, "humidity": 60, "rain": 100},            # Madhya Pradesh
-    "Jaipur": {"soil": "Sandy", "crop": "Bajra", "temp": 35, "humidity": 40, "rain": 50},               # Rajasthan
-    "Lucknow": {"soil": "Alluvial", "crop": "Wheat", "temp": 25, "humidity": 55, "rain": 80},           # Uttar Pradesh
-    "Patna": {"soil": "Alluvial", "crop": "Rice", "temp": 29, "humidity": 70, "rain": 120},             # Bihar
-    "Ranchi": {"soil": "Red", "crop": "Maize", "temp": 27, "humidity": 65, "rain": 110},                # Jharkhand
-    "Kolkata": {"soil": "Alluvial", "crop": "Rice", "temp": 30, "humidity": 75, "rain": 150},           # West Bengal
-    "Guwahati": {"soil": "Alluvial", "crop": "Tea", "temp": 26, "humidity": 85, "rain": 250},           # Assam
-    "Imphal": {"soil": "Red", "crop": "Rice", "temp": 24, "humidity": 80, "rain": 200},                 # Manipur
-    "Shillong": {"soil": "Laterite", "crop": "Tea", "temp": 20, "humidity": 85, "rain": 220},           # Meghalaya
-    "Aizawl": {"soil": "Red", "crop": "Maize", "temp": 23, "humidity": 75, "rain": 180},                # Mizoram
-    "Agartala": {"soil": "Alluvial", "crop": "Rice", "temp": 28, "humidity": 80, "rain": 200},          # Tripura
-    "Kohima": {"soil": "Mountain", "crop": "Rice", "temp": 22, "humidity": 78, "rain": 190},            # Nagaland
-    "Itanagar": {"soil": "Mountain", "crop": "Maize", "temp": 21, "humidity": 85, "rain": 250},         # Arunachal Pradesh
-    "Bhubaneswar": {"soil": "Laterite", "crop": "Rice", "temp": 31, "humidity": 75, "rain": 140},       # Odisha
-    "Raipur": {"soil": "Red", "crop": "Rice", "temp": 30, "humidity": 70, "rain": 130},                 # Chhattisgarh
-    "Panaji": {"soil": "Laterite", "crop": "Coconut", "temp": 30, "humidity": 80, "rain": 280},         # Goa
-    "Chandigarh": {"soil": "Alluvial", "crop": "Wheat", "temp": 24, "humidity": 55, "rain": 90},        # Punjab/Haryana
-    "Dehradun": {"soil": "Alluvial", "crop": "Basmati Rice", "temp": 22, "humidity": 65, "rain": 140},  # Uttarakhand
-    "Shimla": {"soil": "Mountain", "crop": "Apple", "temp": 15, "humidity": 70, "rain": 120},           # Himachal Pradesh
-    "Srinagar": {"soil": "Mountain", "crop": "Apple", "temp": 14, "humidity": 65, "rain": 100},         # J&K
+    "Bengaluru": {"soil": "Red", "crop": "Ragi", "temp": 26, "humidity": 60, "rain": 90},
+    "Hyderabad": {"soil": "Black", "crop": "Cotton", "temp": 32, "humidity": 55, "rain": 70},
+    "Vijayawada": {"soil": "Alluvial", "crop": "Rice", "temp": 33, "humidity": 70, "rain": 120},
+    "Mumbai": {"soil": "Laterite", "crop": "Rice", "temp": 30, "humidity": 80, "rain": 300},
+    "Indore": {"soil": "Black", "crop": "Soybean", "temp": 28, "humidity": 60, "rain": 100},
+    "Jaipur": {"soil": "Sandy", "crop": "Bajra", "temp": 35, "humidity": 40, "rain": 50},
+    "Lucknow": {"soil": "Alluvial", "crop": "Wheat", "temp": 25, "humidity": 55, "rain": 80},
+    "Patna": {"soil": "Alluvial", "crop": "Rice", "temp": 29, "humidity": 70, "rain": 120},
+    "Ranchi": {"soil": "Red", "crop": "Maize", "temp": 27, "humidity": 65, "rain": 110},
+    "Kolkata": {"soil": "Alluvial", "crop": "Rice", "temp": 30, "humidity": 75, "rain": 150},
+    "Guwahati": {"soil": "Alluvial", "crop": "Tea", "temp": 26, "humidity": 85, "rain": 250},
+    "Imphal": {"soil": "Red", "crop": "Rice", "temp": 24, "humidity": 80, "rain": 200},
+    "Shillong": {"soil": "Laterite", "crop": "Tea", "temp": 20, "humidity": 85, "rain": 220},
+    "Aizawl": {"soil": "Red", "crop": "Maize", "temp": 23, "humidity": 75, "rain": 180},
+    "Agartala": {"soil": "Alluvial", "crop": "Rice", "temp": 28, "humidity": 80, "rain": 200},
+    "Kohima": {"soil": "Mountain", "crop": "Rice", "temp": 22, "humidity": 78, "rain": 190},
+    "Itanagar": {"soil": "Mountain", "crop": "Maize", "temp": 21, "humidity": 85, "rain": 250},
+    "Bhubaneswar": {"soil": "Laterite", "crop": "Rice", "temp": 31, "humidity": 75, "rain": 140},
+    "Raipur": {"soil": "Red", "crop": "Rice", "temp": 30, "humidity": 70, "rain": 130},
+    "Panaji": {"soil": "Laterite", "crop": "Coconut", "temp": 30, "humidity": 80, "rain": 280},
+    "Chandigarh": {"soil": "Alluvial", "crop": "Wheat", "temp": 24, "humidity": 55, "rain": 90},
+    "Dehradun": {"soil": "Alluvial", "crop": "Basmati Rice", "temp": 22, "humidity": 65, "rain": 140},
+    "Shimla": {"soil": "Mountain", "crop": "Apple", "temp": 15, "humidity": 70, "rain": 120},
+    "Srinagar": {"soil": "Mountain", "crop": "Apple", "temp": 14, "humidity": 65, "rain": 100},
 }
-
-# --------------------------------------------------
-# CROP → NPK & pH DATA
-# --------------------------------------------------
 
 crop_npk = {
     "Rice": (90, 40, 40, 6.5),
@@ -114,30 +102,83 @@ crop_npk = {
 }
 
 # --------------------------------------------------
-# UI
+# STREAMLIT APP
 # --------------------------------------------------
 
-city = st.selectbox("📍 Select City", sorted(city_data.keys()))
-info = city_data[city]
-crop = info["crop"]
+st.set_page_config(page_title="AI Crop Recommendation", layout="wide")
 
-N, P, K, ph = crop_npk[crop]
+page = st.sidebar.radio("📑 Navigation", ["City Selection", "Crop Recommendation", "Real-Time Visualization"])
 
-st.subheader("📊 Auto-Generated Soil & Crop Details")
+# --------------------------------------------------
+# PAGE 1 – CITY SELECTION
+# --------------------------------------------------
+if page == "City Selection":
+    st.title("📍 Select City")
+    city = st.selectbox("Choose City", sorted(city_data.keys()))
+    st.session_state["city"] = city
 
-st.write(f"🌱 **Recommended Crop:** {crop}")
-st.write(f"🟤 **Soil Type:** {info['soil']}")
-st.write(f"🌡️ **Temperature:** {info['temp']} °C")
-st.write(f"💧 **Humidity:** {info['humidity']} %")
-st.write(f"🌧️ **Rainfall:** {info['rain']} mm")
+    st.success(f"City Selected: {city}")
 
-st.subheader("🧪 Soil Nutrients (Auto-Set)")
-st.write(f"Nitrogen (N): **{N}**")
-st.write(f"Phosphorus (P): **{P}**")
-st.write(f"Potassium (K): **{K}**")
-st.write(f"Soil pH: **{ph}**")
+# --------------------------------------------------
+# PAGE 2 – CROP RECOMMENDATION
+# --------------------------------------------------
+elif page == "Crop Recommendation":
+    if "city" not in st.session_state:
+        st.warning("Please select a city first")
+    else:
+        city = st.session_state["city"]
+        data = city_data[city]
 
-st.success("✅ Recommendation generated automatically based on city, soil and climate")
+        crop = data["crop"]
+        N, P, K, pH = crop_npk[crop]
+
+        st.title("🌾 Crop Recommendation Result")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.subheader("📊 Environmental Details")
+            st.write("🌡 Temperature:", data["temp"], "°C")
+            st.write("💧 Humidity:", data["humidity"], "%")
+            st.write("🌧 Rainfall:", data["rain"], "mm")
+            st.write("🪨 Soil Type:", data["soil"])
+
+        with col2:
+            st.subheader("✅ Recommended Crop")
+            st.success(crop)
+            st.write("🧪 Nitrogen (N):", N)
+            st.write("🧪 Phosphorus (P):", P)
+            st.write("🧪 Potassium (K):", K)
+            st.write("⚖ Soil pH:", pH)
+
+# --------------------------------------------------
+# PAGE 3 – REAL-TIME VISUALIZATION (DEMO)
+# --------------------------------------------------
+else:
+    st.title("📷 Real-Time Crop Detection (Demo)")
+
+    uploaded = st.file_uploader("Upload Field Image", type=["jpg", "png"])
+
+    detections = [
+        {"name": "Rice", "conf": "98%", "box": (60, 80, 300, 350)},
+        {"name": "Sugarcane", "conf": "96%", "box": (350, 100, 650, 380)},
+    ]
+
+    if uploaded:
+        img = Image.open(uploaded).convert("RGB")
+        draw = ImageDraw.Draw(img)
+
+        for d in detections:
+            draw.rectangle(d["box"], outline="red", width=4)
+            draw.text((d["box"][0], d["box"][1]-20),
+                      f"{d['name']} ({d['conf']})", fill="red")
+
+        st.image(img, caption="Crop Detection Visualization", use_container_width=True)
+
+        st.info("This visualization simulates AI-based crop detection for demonstration.")
+    else:
+        st.warning("Upload an image to view detection")
+
 
 ```
 
@@ -147,6 +188,14 @@ st.success("✅ Recommendation generated automatically based on city, soil and c
 <img width="1915" height="1027" alt="Screenshot 2025-12-26 111005" src="https://github.com/user-attachments/assets/6d1cf877-20cc-4fd8-9636-a939898ef92f" />
 <img width="1919" height="1018" alt="Screenshot 2025-12-26 111044" src="https://github.com/user-attachments/assets/b21ade9a-59bd-4cda-b56a-51a6d80c77ae" />
 <img width="1919" height="1014" alt="Screenshot 2025-12-26 111025" src="https://github.com/user-attachments/assets/528a510d-f883-4238-ab04-82e178dbf1f2" />
+
+<img width="1919" height="1020" alt="Screenshot 2025-12-26 124721" src="https://github.com/user-attachments/assets/0ff0dc71-a2a1-4681-ba90-4b8cc8358e79" />
+<img width="1919" height="1012" alt="Screenshot 2025-12-26 124736" src="https://github.com/user-attachments/assets/7fddacc8-1b50-4662-9655-61fe20ff4070" />
+<img width="1919" height="1018" alt="Screenshot 2025-12-26 124751" src="https://github.com/user-attachments/assets/dfd4e5e4-f6a1-46a8-b764-1ac4f0658417" />
+<img width="1426" height="769" alt="Screenshot 2025-12-26 124834" src="https://github.com/user-attachments/assets/1dad756b-d366-4a63-8f8d-870c5c5a8670" />
+
+
+
 
 ### Demo 1:
 <img width="1919" height="1020" alt="Screenshot 2025-12-26 111107" src="https://github.com/user-attachments/assets/7c5f2ff6-4980-451e-a5d4-04288efb1df2" />
