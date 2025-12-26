@@ -6,11 +6,11 @@ The system automatically adjusts agricultural parameters according to the select
 
 # Problem Statement
 Farmers often select crops based on traditional knowledge, personal experience, or trial and error. This approach faces several challenges:
-   ## > Lack of city-specific crop guidance
-   ## > Manual estimation of soil nutrients
-   ## > Crop failure due to unsuitable climate or soil
-   ## > Low productivity and financial loss
-   ## > Absence of user-friendly AI tools for farmers
+   ### > Lack of city-specific crop guidance
+   ### > Manual estimation of soil nutrients
+   ### > Crop failure due to unsuitable climate or soil
+   ### > Low productivity and financial loss
+   ### > Absence of user-friendly AI tools for farmers
 There is a need for an intelligent, location-aware system that recommends crops accurately based on scientific and regional agricultural data.
 
 # Algorithm
@@ -148,13 +148,13 @@ st.success("✅ Recommendation generated automatically based on city, soil and c
 <img width="1919" height="1018" alt="Screenshot 2025-12-26 111044" src="https://github.com/user-attachments/assets/b21ade9a-59bd-4cda-b56a-51a6d80c77ae" />
 <img width="1919" height="1014" alt="Screenshot 2025-12-26 111025" src="https://github.com/user-attachments/assets/528a510d-f883-4238-ab04-82e178dbf1f2" />
 
-## Demo flow 1:
+### Demo 1:
 <img width="1919" height="1020" alt="Screenshot 2025-12-26 111107" src="https://github.com/user-attachments/assets/7c5f2ff6-4980-451e-a5d4-04288efb1df2" />
 
-## Demo flow 2:
+### Demo 2:
 <img width="1919" height="1022" alt="Screenshot 2025-12-26 111132" src="https://github.com/user-attachments/assets/e1ba7105-9adf-44a4-90fa-879bca2bf3d2" />
 
-## Demo flow 3:
+### Demo 3:
 <img width="1919" height="1018" alt="Screenshot 2025-12-26 111148" src="https://github.com/user-attachments/assets/1f65c7df-6c16-4a09-85ba-27279e22c110" />
 
 # Result
